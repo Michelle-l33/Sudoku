@@ -1,0 +1,42 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww12720\viewh7800\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Sudoku Reading Notes:\
+\
+Breadth First Search (BFS):\
+-	Broadens the solution space systematically and explores all possibilities that exist at each level.\
+-	Adv- No deadlock\
+-	Dis \'96 lots of memory\
+-	Using BFS to solve Sudoku:\
+o	Start at empty root node\
+o	All possible numbers that can be entered in box-0 developed without violating rules; each of these possible numbers entered into single node at level 0.\
+o	If the next box is a \'93given\'94(question) box then the parent node does not need to develop child nodes and all parent nodes have the same child node (the node that contains the numbers in the question box)\
+o	If the next box is an \'93input\'94 (answer) box, then develop all possible numbers that can be entered without violating rules.\
+o	Continue developing all levels until level 80 is reached \'96 answer if series of steps from level 0 to level 80\
+o	If none of the nodes can reach the 80th level, there is no solution.\
+\
+\
+Depth Limited Search (DLS):\
+-	Carries out form initial node in depth until most recent is found.\
+-	Adv \'96 quick to reach depth; small memory (only nodes in active path are stored in tree)\
+-	Dis \'96 max level of solution must be known; if depth limit is smaller than solution depth, can\'92t find solution.\
+-	Using DLS to solve Sudoku:\
+o	Start empty root node\
+o	From there, 1 possible number will be developed that can be entered in box 0 (w/o violating rules); this is level-1 child node.\
+o	If no child nodes can be expanded \'96 all numbers violate rules, then backtrack to parent and develop another child. (basically one child at a time \'96 Depth bitch)\
+o	If next box is a given box, then the parent node does not need to develop child node and goes directly to the child node containing the Sudoku question and develops other child nodes.\
+o	Continue until level 80 \'96 answer is steps from level-1 to level-80\
+o	If there is a backtrack on the root node \'96 no solution\
+\
+\
+Overall Conclusion:\
+-	DFS is more efficient and faster\
+-	If sudoku has more than one answer BFS will find it\
+-	BFS is more structured and has a systematic search system.\
+\
+-	Looks like we are using just one of the two, whichever we prefer to use\
+}
