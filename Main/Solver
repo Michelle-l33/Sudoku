@@ -1,0 +1,19 @@
+public class Solver{
+    private int[][] grid; 
+    private int gridSize;
+    private int subGridSize;
+    private Graph graph;
+
+    public Solver(int gridSize, int subGridSize){
+        this.gridSize = gridSize;
+        this.subGridSize = subGridSize;
+        this.grid = new int[gridSize][gridSize]; // creates the grid for the puzzle;
+        this.graph = new Graph(); // creates graph for the specified puzzle
+    }
+
+    //Restraints:
+    // No duplicates in row
+    // No duplicates in column
+    // No duplicates in subgrid
+
+}
