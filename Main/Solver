@@ -1,13 +1,15 @@
+//implement the non 9x9 grid size option - grid can be any size
+
 public class Solver{
     private int[][] grid; 
     private int gridSize;
     private int subGridSize;
     private Graph graph;
 
-    public Solver(int gridSize, int subGridSize){
+    public Solver(int gridSize, int subGridSize, int [][] OriginalGrid){
         this.gridSize = gridSize;
         this.subGridSize = subGridSize;
-        this.grid = new int[gridSize][gridSize]; // creates the grid for the puzzle;
+        this.grid = OriginalGrid; // creates the grid for the puzzle;
         this.graph = new Graph(); // creates graph for the specified puzzle
     }
 
@@ -15,5 +17,47 @@ public class Solver{
     // No duplicates in row
     // No duplicates in column
     // No duplicates in subgrid
+
+    //BUILD GRAPH METHOD
+    public void build(){
+        for(int row=0; row<gridSize; row++){
+            for (int col=0; col<gridSize;col++){
+                int vertex = row*gridSize+col;
+                graph.addVertex(vertex);
+                for(int x = 0; x<gridSize; x++){
+                    // adds edges between each vertex in row and column, except for itself
+                    if(x!=row){
+                        this.graph.addEdge(vertex,x);
+                    }
+                    if(x!=col){
+                        this.graph.addEdge(vertex, x);
+                    }
+                }
+                // connects edges in the subgrids
+                for (int a = row; a<row+subGridSize; a++){
+                    for(int b = col; b<col+subGridSize; b++){
+                        int subGridVert = a*gridSize+b;
+                        if (subGridVert !=vertex){
+                            this.graph.addEdge(vertex,subGridVert);
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    //SOlVE BY BFS METHOD
+
+    //SOLVE BY DLS METHOD
+
+    //CHECK IF SOLVED METHOD (maybe check if each column / row = total factorial but addition;)
+        //like if grid size is 9, total = 9+8+7+6+5+4+3+2+1 = 45 and if total of a col/row =45 then it is solved
+
+    //CHECK IF ABLE TO PLACE NUM THERE METHOD utilizes graphs adj list to check
+
+    //COPY GRID METHOD TO MAKE CHANGES THAT DONT AFFECT ORIGINAL
+
+    //PRINT SOLVED GRID METHOD
 
 }

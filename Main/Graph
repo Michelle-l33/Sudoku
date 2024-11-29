@@ -66,6 +66,3 @@ public class Graph {
     public List<Integer> getAdjVert(int vertex){
         return adjacentList.get(vertex);
     }
-
-    
-}
