@@ -4,7 +4,7 @@ public class Solver{
     private int[][] grid; 
     private int gridSize;
     private int subGridSize;
-    private Graph graph;
+    protected Graph graph;
 
     public Solver(int gridSize, int subGridSize, int [][] OriginalGrid){
         this.gridSize = gridSize;
@@ -19,26 +19,31 @@ public class Solver{
     // No duplicates in subgrid
 
     //BUILD GRAPH METHOD
-    public void build(){
-        for(int row=0; row<gridSize; row++){
-            for (int col=0; col<gridSize;col++){
-                int vertex = row*gridSize+col;
+    public void build() {
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                int vertex = row * gridSize + col;
                 graph.addVertex(vertex);
-                for(int x = 0; x<gridSize; x++){
-                    // adds edges between each vertex in row and column, except for itself
-                    if(x!=row){
-                        this.graph.addEdge(vertex,x);
+                //connects edges in rows
+                for (int c = 0; c < gridSize; c++) {
+                    if (c != col) {
+                        graph.addEdge(vertex, row * gridSize + c);
                     }
-                    if(x!=col){
-                        this.graph.addEdge(vertex, x);
+                }
+                //connects edges in cols
+                for (int r = 0; r < gridSize; r++) {
+                    if (r != row) {
+                        graph.addEdge(vertex, r * gridSize + col);
                     }
                 }
                 // connects edges in the subgrids
-                for (int a = row; a<row+subGridSize; a++){
-                    for(int b = col; b<col+subGridSize; b++){
-                        int subGridVert = a*gridSize+b;
-                        if (subGridVert !=vertex){
-                            this.graph.addEdge(vertex,subGridVert);
+                int subGridRowStart = (row / subGridSize) * subGridSize;
+                int subGridColStart = (col / subGridSize) * subGridSize;
+                for (int r = subGridRowStart; r < subGridRowStart + subGridSize; r++) {
+                    for (int c = subGridColStart; c < subGridColStart + subGridSize; c++) {
+                        int subGridVertex = r * gridSize + c;
+                        if (subGridVertex != vertex) {
+                            graph.addEdge(vertex, subGridVertex);
                         }
                     }
                 }
