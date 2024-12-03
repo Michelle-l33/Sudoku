@@ -22,19 +22,10 @@ public class SudokuTest {
         boolean solved = solver.solveByDFS(0, 0);
         if (solved) {
             System.out.println("Puzzle solved successfully:");
-            printGrid(solver.getGrid());
+            solver.printGrid();
         } else {
             System.out.println("No solution exists for the given puzzle.");
         }
     }
 
-    // Utility method to print the grid
-    public static void printGrid(int[][] grid) {
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                System.out.print(grid[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
 }
