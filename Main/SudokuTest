@@ -1,0 +1,40 @@
+public class SudokuTest {
+
+    public static void main(String[] args) {
+        // Example grid for a 4x4 Sudoku puzzle
+        int[][] grid = {
+                {1, 0, 0, 0},
+                {0, 0, 0, 2},
+                {0, 0, 0, 0},
+                {0, 0, 0, 3}
+        };
+
+        int gridSize = 4;
+        int subGridSize = 2;
+
+        Solver solver = new Solver(gridSize, subGridSize, grid);
+
+        // Test build method
+        solver.build();
+        System.out.println("Graph built successfully.");
+
+        // Test solveByDFS method
+        boolean solved = solver.solveByDFS(0, 0);
+        if (solved) {
+            System.out.println("Puzzle solved successfully:");
+            printGrid(solver.getGrid());
+        } else {
+            System.out.println("No solution exists for the given puzzle.");
+        }
+    }
+
+    // Utility method to print the grid
+    public static void printGrid(int[][] grid) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                System.out.print(grid[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}

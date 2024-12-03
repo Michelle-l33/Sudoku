@@ -1,7 +1,7 @@
 //implement the non 9x9 grid size option - grid can be any size
 
 public class Solver{
-    private int[][] grid; 
+    private int[][] grid;
     private int gridSize;
     private int subGridSize;
     protected Graph graph;
@@ -20,28 +20,28 @@ public class Solver{
 
     //BUILD GRAPH METHOD
     public void build() {
-        for (int row = 0; row < gridSize; row++) {
-            for (int col = 0; col < gridSize; col++) {
-                int vertex = row * gridSize + col;
+        for (int row = 0; row < this.gridSize; row++) {
+            for (int col = 0; col < this.gridSize; col++) {
+                int vertex = row * this.gridSize + col;
                 graph.addVertex(vertex);
                 //connects edges in rows
-                for (int c = 0; c < gridSize; c++) {
+                for (int c = 0; c < this.gridSize; c++) {
                     if (c != col) {
-                        graph.addEdge(vertex, row * gridSize + c);
+                        graph.addEdge(vertex, row * this.gridSize + c);
                     }
                 }
                 //connects edges in cols
-                for (int r = 0; r < gridSize; r++) {
+                for (int r = 0; r < this.gridSize; r++) {
                     if (r != row) {
-                        graph.addEdge(vertex, r * gridSize + col);
+                        graph.addEdge(vertex, r * this.gridSize + col);
                     }
                 }
                 // connects edges in the subgrids
-                int subGridRowStart = (row / subGridSize) * subGridSize;
-                int subGridColStart = (col / subGridSize) * subGridSize;
-                for (int r = subGridRowStart; r < subGridRowStart + subGridSize; r++) {
-                    for (int c = subGridColStart; c < subGridColStart + subGridSize; c++) {
-                        int subGridVertex = r * gridSize + c;
+                int subGridRowStart = (row / this.subGridSize) * this.subGridSize;
+                int subGridColStart = (col / this.subGridSize) * this.subGridSize;
+                for (int r = subGridRowStart; r < subGridRowStart + this.subGridSize; r++) {
+                    for (int c = subGridColStart; c < subGridColStart + this.subGridSize; c++) {
+                        int subGridVertex = r * this.gridSize + c;
                         if (subGridVertex != vertex) {
                             graph.addEdge(vertex, subGridVertex);
                         }
@@ -54,24 +54,94 @@ public class Solver{
 
     //SOlVE BY BFS METHOD
 
+
     //SOLVE BY DLS METHOD
+    public Integer DFS(){
+        int count = 0;
+        for (int i=0; i< this.gridSize;i++){
+            for(int j=0; j<this.gridSize;j++){
+                Boolean run =solveByDFS(i,j);
+                if (run==true){
+                    count+=1;
+                }
+            }
+        }
+        return count;
+    }
+
+    public boolean solveByDFS(int row, int col) {
+        // if end, finished
+        if (row == this.gridSize) return true;
+
+        // Calculate the next cell position
+        int nextRow = (col == this.gridSize - 1) ? row + 1 : row;
+        int nextCol = (col + 1) % this.gridSize;
+
+        // move to next cell if filled
+        if (grid[row][col] != 0) {
+            return solveByDFS(nextRow, nextCol);
+        }
+
+        // try numbers from 1 to size of grid
+        for (int num = 1; num <= this.gridSize; num++) {
+            if (canPlace(row, col, num)) {
+                this.grid[row][col] = num; // Place the number
+                if (solveByDFS(nextRow, nextCol)) return true; // Continue to next cell
+                this.grid[row][col] = 0; // Backtrack
+            }
+        }
+        //no solution
+        return false;
+    }
 
     //CHECK IF SOLVED METHOD (maybe check if each column / row = total factorial but addition;)
-        //like if grid size is 9, total = 9+8+7+6+5+4+3+2+1 = 45 and if total of a col/row =45 then it is solved
+    //like if grid size is 9, total = 9+8+7+6+5+4+3+2+1 = 45 and if total of a col/row =45 then it is solved
 
     //CHECK IF ABLE TO PLACE NUM THERE METHOD utilizes graphs adj list to check
+    public boolean canPlace(int row, int col, int num){
+        //check the row first
+        for (int i=0; i<this.gridSize;i++){
+            //match found = can not place num
+            if (this.grid[row][i]==num){
+                return false;
+            }
+        }
+        //check the col next
+        for(int j=0;j<this.gridSize;j++){
+            //match found = can not place num
+            if (this.grid[j][col]==num){
+                return false;
+            }
+        }
+        //check through the subgrid to see if it already exists
+        int subGridRow =( row /this.subGridSize) * this.subGridSize;
+        int subGridCol = (col/this.subGridSize) * this.subGridSize;
+        for(int a = subGridRow; a<subGridRow+this.subGridSize; a++){
+            for(int b = subGridCol; b<subGridCol+this.subGridSize; b++){
+                //match found = can not place num
+                if(this.grid[a][b]==num){
+                    return false;
+                }
+            }
+        }
+        //if no matches were found
+        return true;
+    }
+
 
     //COPY GRID METHOD TO MAKE CHANGES THAT DONT AFFECT ORIGINAL
     private int[][] copy(int[][] grid){
-        int [][] copyGrid = new int[gridSize][gridSize];
-        for (int i =0, i<gridSize,i++){
-            for(int j = o, j<gridSize, j++){
-                copyGrid[i][j]=grid[i][j]
+        int [][] copyGrid = new int[this.gridSize][this.gridSize];
+        for (int i =0; i< this.gridSize;i++){
+            for(int j = 0; j<this.gridSize; j++){
+                copyGrid[i][j]= this.grid[i][j];
             }
         }
         return copyGrid;
     }
 
     //PRINT SOLVED GRID METHOD
-
+    public int[][] getGrid(){
+        return this.grid;
+    }
 }

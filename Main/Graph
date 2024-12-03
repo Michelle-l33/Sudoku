@@ -4,7 +4,7 @@ import java.util.*;
 public class Graph {
     //adjacent list is created for each vertex,
     //where each vertex is put in as well as its own adjacent list
-    private Map<Integer, List<Integer>> adjacentList;
+    protected Map<Integer, List<Integer>> adjacentList;
 
     public Graph() {
         adjacentList = new HashMap<>();
@@ -12,7 +12,7 @@ public class Graph {
 
     // add vertex to the adjacent list, with its own adjacent list
     public void addVertex(int vertex) {
-        adjacentList.put(vertex, new ArrayList<>());
+        adjacentList.putIfAbsent(vertex, new ArrayList<>());
     }
 
     public void removeVertex(int vertex) {
@@ -30,6 +30,8 @@ public class Graph {
 
     // adds edge between two vertices by adding each one to the others adjacent list
     public void addEdge(int v1, int v2) {
+        adjacentList.putIfAbsent(v1, new ArrayList<>());
+        adjacentList.putIfAbsent(v2, new ArrayList<>());
         adjacentList.get(v1).add(v2);
         adjacentList.get(v2).add(v1);
     }
