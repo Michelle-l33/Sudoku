@@ -3,8 +3,8 @@ import java.util.*;
 
 public class Solver{
     private int[][] grid;
-    private int gridSize;
-    private int subGridSize;
+    private final int gridSize;
+    private final int subGridSize;
     protected Graph graph;
 
     public Solver(int gridSize, int subGridSize, int [][] OriginalGrid){
@@ -89,7 +89,7 @@ public class Solver{
             }
         }
         //no solution
-        return;
+        
     }
 
     //CHECK IF SOLVED METHOD (maybe check if each column / row = total factorial but addition;)
@@ -132,7 +132,7 @@ public class Solver{
         int [][] copyGrid = new int[this.gridSize][this.gridSize];
         for (int i =0; i< this.gridSize;i++){
             for(int j = 0; j<this.gridSize; j++){
-                copyGrid[i][j]= this.grid[i][j];
+                copyGrid[i][j]= grid[i][j];
             }
         }
         return copyGrid;
