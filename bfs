@@ -47,7 +47,7 @@ private int[] findEmptyCell(int[][] grid) {
 }
 
 // Overloaded canPlace method for a given grid configuration
-private boolean canPlace(int row, int col, int num, int[][] grid) {
+private boolean putInGraphCheck(int row, int col, int num, int[][] grid) {
     // Check row
     for (int i = 0; i < gridSize; i++) {
         if (grid[row][i] == num) return false;
