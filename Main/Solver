@@ -1,4 +1,5 @@
 //implement the non 9x9 grid size option - grid can be any size
+import java.util.*;
 
 public class Solver{
     private int[][] grid;
@@ -56,22 +57,18 @@ public class Solver{
 
 
     //SOLVE BY DLS METHOD
-    public Integer DFS(){
-        int count = 0;
-        for (int i=0; i< this.gridSize;i++){
-            for(int j=0; j<this.gridSize;j++){
-                Boolean run =solveByDFS(i,j);
-                if (run==true){
-                    count+=1;
-                }
-            }
-        }
-        return count;
+    public List<int[][]> DFS(){
+        List<int[][]> solutions = new ArrayList<>();
+        solveByDFS(0, 0, solutions);
+        return solutions;
     }
 
-    public boolean solveByDFS(int row, int col) {
+    public void solveByDFS(int row, int col, List<int[][]> solutions) {
         // if end, finished
-        if (row == this.gridSize) return true;
+        if (row == this.gridSize) {
+            solutions.add(copy(this.grid));
+            return;
+        }
 
         // Calculate the next cell position
         int nextRow = (col == this.gridSize - 1) ? row + 1 : row;
@@ -79,19 +76,20 @@ public class Solver{
 
         // move to next cell if filled
         if (grid[row][col] != 0) {
-            return solveByDFS(nextRow, nextCol);
+            solveByDFS(nextRow, nextCol, solutions);
+            return;
         }
 
         // try numbers from 1 to size of grid
         for (int num = 1; num <= this.gridSize; num++) {
             if (canPlace(row, col, num)) {
                 this.grid[row][col] = num; // Place the number
-                if (solveByDFS(nextRow, nextCol)) return true; // Continue to next cell
+                solveByDFS(nextRow, nextCol,solutions); // Continue to next cell
                 this.grid[row][col] = 0; // Backtrack
             }
         }
         //no solution
-        return false;
+        return;
     }
 
     //CHECK IF SOLVED METHOD (maybe check if each column / row = total factorial but addition;)
