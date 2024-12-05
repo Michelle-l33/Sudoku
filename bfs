@@ -1,0 +1,78 @@
+import java.util.*;
+
+public boolean solveByBFS() {
+    Queue<int[][]> queue = new LinkedList<>();
+    queue.add(copy(this.grid)); // Add the initial grid configuration to the queue
+
+    int solutionCount = 0;
+
+    while (!queue.isEmpty()) {
+        int[][] currentGrid = queue.poll();
+
+        int[] emptyCell = findEmptyCell(currentGrid);
+        if (emptyCell == null) { 
+            // No empty cells, a solution is found
+            solutionCount++;
+            System.out.println("Solution " + solutionCount + ":");
+            printGrid(currentGrid);
+            continue; // Keep searching for additional solutions
+        }
+
+        int row = emptyCell[0];
+        int col = emptyCell[1];
+
+        for (int num = 1; num <= this.gridSize; num++) {
+            if (canPlace(row, col, num, currentGrid)) {
+                int[][] newGrid = copy(currentGrid);
+                newGrid[row][col] = num;
+                queue.add(newGrid); // Enqueue the new configuration
+            }
+        }
+    }
+
+    System.out.println("Total solutions found: " + solutionCount);
+    return solutionCount > 0;
+}
+
+// Helper method to find the first empty cell in the grid
+private int[] findEmptyCell(int[][] grid) {
+    for (int row = 0; row < gridSize; row++) {
+        for (int col = 0; col < gridSize; col++) {
+            if (grid[row][col] == 0) {
+                return new int[]{row, col};
+            }
+        }
+    }
+    return null; // No empty cell found
+}
+
+// Overloaded canPlace method for a given grid configuration
+private boolean canPlace(int row, int col, int num, int[][] grid) {
+    // Check row
+    for (int i = 0; i < gridSize; i++) {
+        if (grid[row][i] == num) return false;
+    }
+    // Check column
+    for (int i = 0; i < gridSize; i++) {
+        if (grid[i][col] == num) return false;
+    }
+    // Check subgrid
+    int subGridRow = (row / subGridSize) * subGridSize;
+    int subGridCol = (col / subGridSize) * subGridSize;
+    for (int r = subGridRow; r < subGridRow + subGridSize; r++) {
+        for (int c = subGridCol; c < subGridCol + subGridSize; c++) {
+            if (grid[r][c] == num) return false;
+        }
+    }
+    return true;
+}
+
+// Overloaded printGrid method to print a given grid
+private void printGrid(int[][] grid) {
+    for (int i = 0; i < gridSize; i++) {
+        for (int j = 0; j < gridSize; j++) {
+            System.out.print(grid[i][j] + " ");
+        }
+        System.out.println();
+    }
+}
