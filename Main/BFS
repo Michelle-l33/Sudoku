@@ -1,78 +1,128 @@
 import java.util.*;
 
-public boolean solveByBFS() {
-    Queue<int[][]> queue = new LinkedList<>();
-    queue.add(copy(this.grid)); // Add the initial grid configuration to the queue
+public class Solver {
+    private int[][] grid;
+    private final int gridSize;
+    private final int subGridSize;
+    protected Graph graph;
 
-    int solutionCount = 0;
+    public Solver(int gridSize, int subGridSize, int[][] OriginalGrid) {
+        this.gridSize = gridSize;
+        this.subGridSize = subGridSize;
+        this.grid = OriginalGrid; // creates the grid for the puzzle
+        this.graph = new Graph(); // creates graph for the specified puzzle
+    }
 
-    while (!queue.isEmpty()) {
-        int[][] currentGrid = queue.poll();
+    // BFS method to solve the Sudoku puzzle
+    public List<int[][]> solveByBFS() {
+        List<int[][]> solutions = new ArrayList<>();
+        Queue<int[][]> queue = new LinkedList<>();
 
-        int[] emptyCell = findEmptyCell(currentGrid);
-        if (emptyCell == null) { 
-            // No empty cells, a solution is found
-            solutionCount++;
-            System.out.println("Solution " + solutionCount + ":");
-            printGrid(currentGrid);
-            continue; // Keep searching for additional solutions
-        }
+        // Initialize the queue with the starting grid
+        queue.add(copy(this.grid));
 
-        int row = emptyCell[0];
-        int col = emptyCell[1];
+        while (!queue.isEmpty()) {
+            int[][] currentGrid = queue.poll();
 
-        for (int num = 1; num <= this.gridSize; num++) {
-            if (canPlace(row, col, num, currentGrid)) {
-                int[][] newGrid = copy(currentGrid);
-                newGrid[row][col] = num;
-                queue.add(newGrid); // Enqueue the new configuration
+            // If the grid is solved, add it to the solutions
+            if (isSolved(currentGrid)) {
+                solutions.add(copy(currentGrid));
+                continue; // skip further exploration since we found a solution
+            }
+
+            // Get the next empty cell to fill
+            int[] emptyCell = getEmptyCell(currentGrid);
+            if (emptyCell == null) {
+                continue; // No empty cells, skip this grid
+            }
+
+            int row = emptyCell[0];
+            int col = emptyCell[1];
+
+            // Try placing each number (1 to gridSize) in the empty cell
+            for (int num = 1; num <= this.gridSize; num++) {
+                if (canPlace(currentGrid, row, col, num)) {
+                    int[][] newGrid = copy(currentGrid);
+                    newGrid[row][col] = num;
+                    queue.add(newGrid); // Add the new grid state to the queue
+                }
             }
         }
+        return solutions; // Return the list of solutions found
     }
 
-    System.out.println("Total solutions found: " + solutionCount);
-    return solutionCount > 0;
-}
-
-// Helper method to find the first empty cell in the grid
-private int[] findEmptyCell(int[][] grid) {
-    for (int row = 0; row < gridSize; row++) {
-        for (int col = 0; col < gridSize; col++) {
-            if (grid[row][col] == 0) {
-                return new int[]{row, col};
+    // Check if the grid is solved
+    private boolean isSolved(int[][] grid) {
+        for (int row = 0; row < this.gridSize; row++) {
+            for (int col = 0; col < this.gridSize; col++) {
+                if (grid[row][col] == 0) {
+                    return false; // If there's any empty cell, it's not solved
+                }
             }
         }
+        return true; // All cells are filled
     }
-    return null; // No empty cell found
-}
 
-// Overloaded canPlace method for a given grid configuration
-private boolean putInGraphCheck(int row, int col, int num, int[][] grid) {
-    // Check row
-    for (int i = 0; i < gridSize; i++) {
-        if (grid[row][i] == num) return false;
-    }
-    // Check column
-    for (int i = 0; i < gridSize; i++) {
-        if (grid[i][col] == num) return false;
-    }
-    // Check subgrid
-    int subGridRow = (row / subGridSize) * subGridSize;
-    int subGridCol = (col / subGridSize) * subGridSize;
-    for (int r = subGridRow; r < subGridRow + subGridSize; r++) {
-        for (int c = subGridCol; c < subGridCol + subGridSize; c++) {
-            if (grid[r][c] == num) return false;
+    // Get the coordinates of the next empty cell (row, col)
+    private int[] getEmptyCell(int[][] grid) {
+        for (int row = 0; row < this.gridSize; row++) {
+            for (int col = 0; col < this.gridSize; col++) {
+                if (grid[row][col] == 0) {
+                    return new int[]{row, col};
+                }
+            }
         }
+        return null; // No empty cells found
     }
-    return true;
-}
 
-// Overloaded printGrid method to print a given grid
-private void printGrid(int[][] grid) {
-    for (int i = 0; i < gridSize; i++) {
-        for (int j = 0; j < gridSize; j++) {
-            System.out.print(grid[i][j] + " ");
+    // Check if it's possible to place the number in the given cell
+    public boolean canPlace(int[][] grid, int row, int col, int num) {
+        // Check the row
+        for (int i = 0; i < this.gridSize; i++) {
+            if (grid[row][i] == num) {
+                return false; // Number already exists in the row
+            }
         }
-        System.out.println();
+
+        // Check the column
+        for (int i = 0; i < this.gridSize; i++) {
+            if (grid[i][col] == num) {
+                return false; // Number already exists in the column
+            }
+        }
+
+        // Check the subgrid
+        int subGridRow = (row / this.subGridSize) * this.subGridSize;
+        int subGridCol = (col / this.subGridSize) * this.subGridSize;
+        for (int i = subGridRow; i < subGridRow + this.subGridSize; i++) {
+            for (int j = subGridCol; j < subGridCol + this.subGridSize; j++) {
+                if (grid[i][j] == num) {
+                    return false; // Number already exists in the subgrid
+                }
+            }
+        }
+
+        return true; // If no conflicts, the number can be placed
+    }
+
+    // Copy the grid to avoid modifying the original grid
+    private int[][] copy(int[][] grid) {
+        int[][] copyGrid = new int[this.gridSize][this.gridSize];
+        for (int i = 0; i < this.gridSize; i++) {
+            for (int j = 0; j < this.gridSize; j++) {
+                copyGrid[i][j] = grid[i][j];
+            }
+        }
+        return copyGrid;
+    }
+
+    // Print the solved grid
+    public void printGrid(int[][] grid) {
+        for (int i = 0; i < this.gridSize; i++) {
+            for (int j = 0; j < this.gridSize; j++) {
+                System.out.print(grid[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 }
