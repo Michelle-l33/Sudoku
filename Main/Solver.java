@@ -1,3 +1,11 @@
+
+//Paper Citation
+//Khemani, Chanchal & Doshi, Jay & Duseja, Juhi & Shah, Krapi & 
+//Udmale, Sandeep & Sambhe, Vijay. (2019). Solving Rubik’s Cube Using 
+//Graph Theory: ICCI-2017. 10.1007/978-981-13-1132-1_24. 
+
+
+
 //implement the non 9x9 grid size option - grid can be any size
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -215,4 +223,5 @@ public class Solver{
         return copyGrid;
     }
 
+   
 }
