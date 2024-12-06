@@ -60,9 +60,9 @@ public class SudokuTest {
         hardSolver.build();
         List<int[][]> hardSolutions = hardSolver.DFS();
         printSolutions(hardSolutions);
-    }
+    
 
-       /*  // Solve the puzzles using BFS
+       // Solve the puzzles using BFS
         System.out.println("Testing Easy Sudoku Puzzle (BFS):");
         List<int[][]> easySolutionsbfs = easySolver.BFS();
         printSolutions(easySolutionsbfs);
@@ -75,7 +75,7 @@ public class SudokuTest {
         hardSolver.build();
         List<int[][]> hardSolutionsbfs = hardSolver.BFS();
         printSolutions(hardSolutionsbfs);
-    } */
+    } 
 
     // Method to print all solutions
     private static void printSolutions(List<int[][]> solutions) {

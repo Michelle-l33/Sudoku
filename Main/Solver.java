@@ -1,5 +1,8 @@
 //implement the non 9x9 grid size option - grid can be any size
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class Solver{
     private int[][] grid;
@@ -54,7 +57,81 @@ public class Solver{
     }
 
     //SOlVE BY BFS METHOD
+    // SOLVE BY BFS METHOD
+    public List<int[][]> BFS() {
+        List<int[][]> solutions = new ArrayList<>(); // To store all solutions
+        Queue<int[][]> queue = new LinkedList<>(); // BFS uses a queue
 
+        // Add the initial grid to the queue
+        queue.add(copy(this.grid));
+
+        while (!queue.isEmpty()) {
+            int[][] current = queue.poll();
+
+            // Find the next empty cell
+            int[] emptyCell = findEmptyCell(current);
+            if (emptyCell == null) {
+                // No empty cell found, it's a solved grid
+                solutions.add(copy(current));
+                continue;
+            }
+
+            int row = emptyCell[0];
+            int col = emptyCell[1];
+
+            // Try placing each number in the empty cell
+            for (int num = 1; num <= this.gridSize; num++) {
+                if (canPlaceInGrid(current, row, col, num)) {
+                    // Create a new grid and place the number
+                    int[][] newGrid = copy(current);
+                    newGrid[row][col] = num;
+                    queue.add(newGrid); // Add to the queue for further exploration
+                }
+            }
+        }
+
+        return solutions; // Return all valid solutions
+    }
+
+    private int[] findEmptyCell(int[][] grid) {
+        for (int row = 0; row < this.gridSize; row++) {
+            for (int col = 0; col < this.gridSize; col++) {
+                if (grid[row][col] == 0) {
+                    return new int[]{row, col};
+                }
+            }
+        }
+        return null; // No empty cell found
+    }
+
+    private boolean canPlaceInGrid(int[][] grid, int row, int col, int num) {
+        // Check row
+        for (int i = 0; i < this.gridSize; i++) {
+            if (grid[row][i] == num) {
+                return false;
+            }
+        }
+
+        // Check column
+        for (int i = 0; i < this.gridSize; i++) {
+            if (grid[i][col] == num) {
+                return false;
+            }
+        }
+
+        // Check subgrid
+        int subGridRow = (row / this.subGridSize) * this.subGridSize;
+        int subGridCol = (col / this.subGridSize) * this.subGridSize;
+        for (int r = subGridRow; r < subGridRow + this.subGridSize; r++) {
+            for (int c = subGridCol; c < subGridCol + this.subGridSize; c++) {
+                if (grid[r][c] == num) {
+                    return false;
+                }
+            }
+        }
+
+        return true; // Placement is valid
+    }
 
     //SOLVE BY DLS METHOD
     public List<int[][]> DFS(){
