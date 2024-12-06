@@ -2,7 +2,7 @@ import java.util.List;
 
 public class SudokuTest {
     public static void main(String[] args) {
-        // Easy Sudoku Puzzle (Solved: 1 Solution)
+        // Easy Sudoku Puzzle 
         int[][] easyPuzzle = {
                 {5, 3, 0, 0, 7, 0, 0, 0, 0},
                 {6, 0, 0, 1, 9, 5, 0, 0, 0},
@@ -15,7 +15,7 @@ public class SudokuTest {
                 {0, 0, 0, 0, 8, 0, 0, 7, 9}
         };
 
-        // Medium Sudoku Puzzle (Solved: 1 Solution)
+        // Medium Sudoku Puzzle 
         int[][] mediumPuzzle = {
                 {0, 0, 0, 0, 0, 0, 0, 5, 0},
                 {0, 0, 3, 6, 0, 0, 0, 0, 0},
@@ -28,7 +28,7 @@ public class SudokuTest {
                 {0, 9, 0, 0, 0, 0, 4, 0, 0}
         };
 
-        // Hard Sudoku Puzzle (Solved: 1 Solution)
+        // Hard Sudoku Puzzle
         int[][] hardPuzzle = {
                 {5, 3, 0, 0, 7, 0, 0, 0, 0},
                 {6, 0, 0, 0, 9, 5, 0, 0, 0},
@@ -41,6 +41,7 @@ public class SudokuTest {
                 {0, 0, 0, 0, 8, 0, 0, 7, 9}
         };
 
+        //smalelr sized puzzle
         int[][] small = {
             {1, 0, 0, 0},
             {0, 0, 2, 0},
@@ -82,46 +83,46 @@ public class SudokuTest {
         //Solver largeSolver = new Solver(large[0].length,(int)Math.sqrt(large[0].length),large);
 
 
-        // Solve the puzzles using DFS
+        // Solve the puzzles using DLS
         System.out.println("Testing Easy Sudoku Puzzle:");
         easySolver.build();
-        long easyStartdfs = System.nanoTime();
-        List<int[][]> easySolutions = easySolver.DFS();
-        long easyEnddfs = System.nanoTime();
-        long easyTimedfs =easyEnddfs-easyStartdfs;
+        long easyStartdls = System.nanoTime();
+        List<int[][]> easySolutions = easySolver.DLS((int)Math.pow(easyPuzzle[0].length,2));
+        long easyEnddls = System.nanoTime();
+        long easyTimedls =easyEnddls-easyStartdls;
         printSolutions(easySolutions);
         
 
         System.out.println("\nTesting Medium Sudoku Puzzle:");
         mediumSolver.build();
-        long mediumStartdfs = System.nanoTime();
-        List<int[][]> mediumSolutions = mediumSolver.DFS();
-        long mediumEnddfs = System.nanoTime();
-        long mediumTimedfs = mediumEnddfs-mediumStartdfs;
+        long mediumStartdls = System.nanoTime();
+        List<int[][]> mediumSolutions = mediumSolver.DLS((int)Math.pow(mediumPuzzle[0].length,2));
+        long mediumEnddls = System.nanoTime();
+        long mediumTimedls = mediumEnddls-mediumStartdls;
         printSolutions(mediumSolutions);
 
         System.out.println("\nTesting Hard Sudoku Puzzle:");
         hardSolver.build();
-        long hardStartdfs = System.nanoTime();
-        List<int[][]> hardSolutions = hardSolver.DFS();
-        long hardEnddfs = System.nanoTime();
-        long hardTimedfs = System.nanoTime();
+        long hardStartdls = System.nanoTime();
+        List<int[][]> hardSolutions = hardSolver.DLS((int)Math.pow(hardPuzzle[0].length,2));
+        long hardEnddls = System.nanoTime();
+        long hardTimedls = System.nanoTime();
         printSolutions(hardSolutions);
 
         System.out.println("\nTesting Small Sudoku Puzzle:");
         smallSolver.build();
-        long smallStartdfs = System.nanoTime();
-        List<int[][]> smallSolutions = smallSolver.DFS();
-        long smallEnddfs = System.nanoTime();
-        long smallTimedfs = smallEnddfs-smallStartdfs;
+        long smallStartdls = System.nanoTime();
+        List<int[][]> smallSolutions = smallSolver.DLS((int)Math.pow(small[0].length,2));
+        long smallEnddls = System.nanoTime();
+        long smallTimedls = smallEnddls-smallStartdls;
         printSolutions(smallSolutions);
 
        /*System.out.println("\nTesting Large Sudoku Puzzle:");
         largeSolver.build();
-        long largeStartdfs = System.nanoTime();
-        List<int[][]> largeSolutions = largeSolver.DFS();
-        long largeEnddfs = System.nanoTime();
-        long largeTimedfs = largeEnddfs-largeStartdfs;
+        long largeStartdls = System.nanoTime();
+        List<int[][]> largeSolutions = largeSolver.DLS();
+        long largeEnddls = System.nanoTime();
+        long largeTimedls = largeEnddls-largeStartdls;
         printSolutions(largeSolutions);*/
     
     
@@ -163,12 +164,12 @@ public class SudokuTest {
         long largeTimebfs = largeEndbfs-largeStartbfs;
         printSolutions(largeSolutionsbsf);*/
 
-       System.out.print("\nDFS Times: \n");
-       System.out.print("Easy: "+ easyTimedfs+ " nanoseconds \n");
-       System.out.print("Medium: "+ mediumTimedfs+ " nanoseconds \n");
-       System.out.print("Hard: "+ hardTimedfs+ " nanoseconds \n");
-       System.out.print("Small: "+ smallTimedfs+ " nanoseconds \n");
-       //System.out.print("Large: "+ largeTimedfs+ "nanoseconds \n");
+       System.out.print("\nDLS Times: \n");
+       System.out.print("Easy: "+ easyTimedls+ " nanoseconds \n");
+       System.out.print("Medium: "+ mediumTimedls+ " nanoseconds \n");
+       System.out.print("Hard: "+ hardTimedls+ " nanoseconds \n");
+       System.out.print("Small: "+ smallTimedls+ " nanoseconds \n");
+       //System.out.print("Large: "+ largeTimedls+ "nanoseconds \n");
 
        System.out.print("\nBFS Times: \n");
        System.out.print("Easy: "+ easyTimebfs+ " nanoseconds \n");

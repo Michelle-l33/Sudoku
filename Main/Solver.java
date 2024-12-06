@@ -3,6 +3,7 @@
 //Khemani, Chanchal & Doshi, Jay & Duseja, Juhi & Shah, Krapi & 
 //Udmale, Sandeep & Sambhe, Vijay. (2019). Solving Rubik’s Cube Using 
 //Graph Theory: ICCI-2017. 10.1007/978-981-13-1132-1_24. 
+//https://stackoverflow.com/questions/71563852/solve-sudoku-using-iterative-breadth-first-search
 
 
 
@@ -12,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+//main solver class
 public class Solver{
     private int[][] grid;
     private final int gridSize;
@@ -19,7 +21,7 @@ public class Solver{
     protected Graph graph;
 
     public Solver(int gridSize, int subGridSize, int [][] OriginalGrid){
-        this.gridSize = gridSize;
+        this.gridSize = gridSize; //utilizes grid size and sub grid size in order to work for any size puzzle
         this.subGridSize = subGridSize;
         this.grid = OriginalGrid; // creates the grid for the puzzle;
         this.graph = new Graph(); // creates graph for the specified puzzle
@@ -32,25 +34,26 @@ public class Solver{
     // No duplicates in subgrid
 
     //BUILD GRAPH METHOD
+    // chat helped with unique vertex - was originally using reg nums
     public void build() {
-        for (int row = 0; row < this.gridSize; row++) {
-            for (int col = 0; col < this.gridSize; col++) {
-                int vertex = row * this.gridSize + col;
-                this.graph.addVertex(vertex);
-                //connects edges in rows
+        for (int row = 0; row < this.gridSize; row++) { //for each row
+            for (int col = 0; col < this.gridSize; col++) { // and each col
+                int vertex = row * this.gridSize + col; // create a unique vertex
+                this.graph.addVertex(vertex); // add vertex to graph
+                //connects edges in col
                 for (int c = 0; c < this.gridSize; c++) {
-                    if (c != col) {
+                    if (c != col) { // makes sure it doesnt put edge from itself to itself
                         this.graph.addEdge(vertex, row * this.gridSize + c);
                     }
                 }
-                //connects edges in cols
+                //connects edges in row
                 for (int r = 0; r < this.gridSize; r++) {
-                    if (r != row) {
+                    if (r != row) { // same as col
                         this.graph.addEdge(vertex, r * this.gridSize + col);
                     }
                 }
                 // connects edges in the subgrids
-                int subGridRowStart = (row / this.subGridSize) * this.subGridSize;
+                int subGridRowStart = (row / this.subGridSize) * this.subGridSize; // uses subgrid size to interact with the right subgrid
                 int subGridColStart = (col / this.subGridSize) * this.subGridSize;
                 for (int r = subGridRowStart; r < subGridRowStart + this.subGridSize; r++) {
                     for (int c = subGridColStart; c < subGridColStart + this.subGridSize; c++) {
@@ -114,74 +117,61 @@ public class Solver{
     }
 
     private boolean canPlaceInGrid(int[][] grid, int row, int col, int num) {
-        // Check row
-        for (int i = 0; i < this.gridSize; i++) {
-            if (grid[row][i] == num) {
-                return false;
-            }
+        int vertex = row * this.gridSize + col;
+    
+    for (int neighbor : this.graph.getAdjVert(vertex)) {
+        int r = neighbor / this.gridSize;
+        int c = neighbor % this.gridSize;
+        if (grid[r][c] == num) {
+            return false;
         }
-
-        // Check column
-        for (int i = 0; i < this.gridSize; i++) {
-            if (grid[i][col] == num) {
-                return false;
-            }
-        }
-
-        // Check subgrid
-        int subGridRow = (row / this.subGridSize) * this.subGridSize;
-        int subGridCol = (col / this.subGridSize) * this.subGridSize;
-        for (int r = subGridRow; r < subGridRow + this.subGridSize; r++) {
-            for (int c = subGridCol; c < subGridCol + this.subGridSize; c++) {
-                if (grid[r][c] == num) {
-                    return false;
-                }
-            }
-        }
-
-        return true; // Placement is valid
+    }
+    return true;
     }
 
     //SOLVE BY DLS METHOD
-    public List<int[][]> DFS(){
+    // help from chatGPT
+    public List<int[][]> DLS(int limit){
         List<int[][]> solutions = new ArrayList<>();
-        solveByDFS(0, 0, solutions);
+        solveByDLS(0, 0, 0,limit, solutions);
         return solutions;
     }
 
-    public void solveByDFS(int row, int col, List<int[][]> solutions) {
+    public void solveByDLS(int row, int col, int depth, int maxDepth, List<int[][]> solutions) {
+        // If depth limit is reached, terminate search
+        if (depth > maxDepth) return;
+    
         // if end, finished
-        if (row == this.gridSize) {
+        if (row == gridSize) {
             solutions.add(copy(this.grid));
             return;
         }
-
+    
         // Calculate the next cell position
         int nextRow = (col == this.gridSize - 1) ? row + 1 : row;
         int nextCol = (col + 1) % this.gridSize;
-
-        // move to next cell if filled
+    
+        // Move to next cell if filled
         if (grid[row][col] != 0) {
-            solveByDFS(nextRow, nextCol, solutions);
+            solveByDLS(nextRow, nextCol, depth + 1, maxDepth, solutions);
             return;
         }
-
-        // try numbers from 1 to size of grid
+    
+        // Try numbers from 1 to size of grid
         for (int num = 1; num <= this.gridSize; num++) {
             if (canPlace(row, col, num)) {
                 this.grid[row][col] = num; // Place the number
-                solveByDFS(nextRow, nextCol,solutions); // Continue to next cell
+                solveByDLS(nextRow, nextCol, depth + 1, maxDepth, solutions); // Continue to next cell
                 this.grid[row][col] = 0; // Backtrack
             }
         }
-        //no solution
-        
     }
 
     //CHECK IF SOLVED METHOD (maybe check if each column / row = total factorial but addition;)
     //like if grid size is 9, total = 9+8+7+6+5+4+3+2+1 = 45 and if total of a col/row =45 then it is solved
 
     //CHECK IF ABLE TO PLACE NUM THERE METHOD utilizes graphs adj list to check
+    //chatgpt helped transform from checking by grid to checking by adjacent vertices
     public boolean canPlace(int row, int col, int num){
         int vertex = row * this.gridSize + col;
         for (int neighbor : graph.getAdjVert(vertex)) {
@@ -198,8 +188,8 @@ public class Solver{
     //COPY GRID METHOD TO MAKE CHANGES THAT DONT AFFECT ORIGINAL
     private int[][] copy(int[][] grid){
         int [][] copyGrid = new int[this.gridSize][this.gridSize];
-        for (int i =0; i< this.gridSize;i++){
-            for(int j = 0; j<this.gridSize; j++){
+        for (int i =0; i< this.gridSize;i++){ //row
+            for(int j = 0; j<this.gridSize; j++){ //col
                 copyGrid[i][j]= grid[i][j];
             }
         }
