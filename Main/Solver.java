@@ -23,6 +23,7 @@ public class Solver{
         this.subGridSize = subGridSize;
         this.grid = OriginalGrid; // creates the grid for the puzzle;
         this.graph = new Graph(); // creates graph for the specified puzzle
+        
     }
 
     //Restraints:
@@ -35,17 +36,17 @@ public class Solver{
         for (int row = 0; row < this.gridSize; row++) {
             for (int col = 0; col < this.gridSize; col++) {
                 int vertex = row * this.gridSize + col;
-                graph.addVertex(vertex);
+                this.graph.addVertex(vertex);
                 //connects edges in rows
                 for (int c = 0; c < this.gridSize; c++) {
                     if (c != col) {
-                        graph.addEdge(vertex, row * this.gridSize + c);
+                        this.graph.addEdge(vertex, row * this.gridSize + c);
                     }
                 }
                 //connects edges in cols
                 for (int r = 0; r < this.gridSize; r++) {
                     if (r != row) {
-                        graph.addEdge(vertex, r * this.gridSize + col);
+                        this.graph.addEdge(vertex, r * this.gridSize + col);
                     }
                 }
                 // connects edges in the subgrids
@@ -55,7 +56,7 @@ public class Solver{
                     for (int c = subGridColStart; c < subGridColStart + this.subGridSize; c++) {
                         int subGridVertex = r * this.gridSize + c;
                         if (subGridVertex != vertex) {
-                            graph.addEdge(vertex, subGridVertex);
+                            this.graph.addEdge(vertex, subGridVertex);
                         }
                     }
                 }
@@ -182,32 +183,14 @@ public class Solver{
 
     //CHECK IF ABLE TO PLACE NUM THERE METHOD utilizes graphs adj list to check
     public boolean canPlace(int row, int col, int num){
-        //check the row first
-        for (int i=0; i<this.gridSize;i++){
-            //match found = can not place num
-            if (this.grid[row][i]==num){
+        int vertex = row * this.gridSize + col;
+        for (int neighbor : graph.getAdjVert(vertex)) {
+            int neighborRow = neighbor / this.gridSize;
+            int neighborCol = neighbor % this.gridSize;
+            if (this.grid[neighborRow][neighborCol] == num) {
                 return false;
             }
         }
-        //check the col next
-        for(int j=0;j<this.gridSize;j++){
-            //match found = can not place num
-            if (this.grid[j][col]==num){
-                return false;
-            }
-        }
-        //check through the subgrid to see if it already exists
-        int subGridRow =( row /this.subGridSize) * this.subGridSize;
-        int subGridCol = (col/this.subGridSize) * this.subGridSize;
-        for(int a = subGridRow; a<subGridRow+this.subGridSize; a++){
-            for(int b = subGridCol; b<subGridCol+this.subGridSize; b++){
-                //match found = can not place num
-                if(this.grid[a][b]==num){
-                    return false;
-                }
-            }
-        }
-        //if no matches were found
         return true;
     }
 
