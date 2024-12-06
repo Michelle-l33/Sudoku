@@ -215,13 +215,4 @@ public class Solver{
         return copyGrid;
     }
 
-    //PRINT SOLVED GRID METHOD
-    public void printGrid() {
-        for (int i = 0; i < this.gridSize; i++) {
-            for (int j = 0; j < this.gridSize; j++) {
-                System.out.print(this.grid[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
 }
